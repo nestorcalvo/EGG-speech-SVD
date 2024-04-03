@@ -7,11 +7,11 @@ __pycache__/
 *.so
 
 # Folders
-./SVD
-./CSV_organized
-./Metadata/IDs_Balanced.csv
-./Metadata/SVD_all_pathologies.csv
-./Database
+SVD/
+CSV_organized/
+Metadata/IDs_Balanced.csv
+Metadata/SVD_all_pathologies.csv
+Database/
 
 # Distribution / packaging
 .Python
