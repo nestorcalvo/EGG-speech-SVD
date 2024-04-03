@@ -24,6 +24,8 @@ from os.path import isfile, join
 import shutil
 import seaborn as sns
 from os.path import exists
+import pathlib
+import itertools
 
 #%% Store audio files in folder with the name of the pathology
 folder_with_csv = "./Web_scraping_csv"
@@ -161,9 +163,51 @@ concatenate_all_csv(folder_with_csv, path_to_save)
 
 #%%
 audio_folder = './SVD'
-general_path = './Database
+general_path = './Database'
+def copy_files_folder(audio_folder, general_path):
+    signal_type = ['egg', 'speech']
+    tasks = ['vowel a', 'vowel i', 'vowel u', 'phrase']
+    # Create folders per signal per task if folder is missing
+    for signal, task in itertools.product(signal_type, tasks):
+        path_name = f'{general_path}/{signal}/{task}'
+        path = pathlib.Path(path_name)
+        path.mkdir(parents=True, exist_ok=True)
+        
+    folder_names = [name for name in os.listdir(audio_folder) if os.path.isdir(os.path.join(audio_folder, name))]
+    for folder_name in folder_names:
+        print('Copying files to folders...')
+        path_audio = os.path.join(audio_folder, folder_name)
+        path_audio = pathlib.Path(path_audio)
+        onlyfiles = [f for f in listdir(path_audio) if isfile(join(path_audio, f))]
+        for file in onlyfiles:
+            task_name = ''
+            signal_name = ''
+            # Drop all files that are not .wav
+            if '.wav' not in file:
+                continue
+            # Check which task and signal type is (they need to be the ones in the variables
+            # task and signal_type above)
+            if 'a_n' in file:
+                task_name = tasks[0]
+            elif 'i_n' in file:
+                task_name = tasks[1]
+            elif 'u_n' in file:
+                task_name = tasks[2]
+            elif 'phrase' in file:
+                task_name = tasks[3]
+            else:
+                print(f'File {file} does not contain a proper task name')
+            # Check the signals
+            if '-egg.' in file:
+                signal_name = signal_type[0]
+            else:
+                signal_name = signal_type[1]
+            
+            
+            store_path = f'{general_path}/{signal_name}/{task_name}/{file}'
+            shutil.copyfile(os.path.join(path_audio, file), store_path)
+    print('Files copied')     
 #def split_audios_per_task(audio_folder, task, signal):
-folder_names = [name for name in os.listdir(audio_folder) if os.path.isdir(os.path.join(audio_folder, name))]
-for name in folder_names:
-    print(name)
+copy_files_folder(audio_folder, general_path)
+
     
