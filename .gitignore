@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Folders
+./SVD
+./CSV_organized
+./Metadata/IDs_Balanced.csv
+./Metadata/SVD_all_pathologies.csv
+./Database
+
 # Distribution / packaging
 .Python
 build/
