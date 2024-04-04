@@ -165,6 +165,14 @@ concatenate_all_csv(folder_with_csv, path_to_save)
 audio_folder = './SVD'
 general_path = './Database'
 def copy_files_folder(audio_folder, general_path):
+    '''
+    Copy all the audios that are in each pathology folder and copies it to a folder
+    where it has the task and the signal as name
+    
+    Parameters:
+        audio_folder: Path with audios inside pathology folder
+        general_path: Path to store the audios (the folders for the task and the signal are created)
+    '''
     signal_type = ['egg', 'speech']
     tasks = ['vowel a', 'vowel i', 'vowel u', 'phrase']
     # Create folders per signal per task if folder is missing
