@@ -126,7 +126,7 @@ def MFCC_feature_generate(audio_path, save_path):
         v_carac = mfcc_vector(matriz_mfcc)
         mat_dis = np.vstack((mat_dis,v_carac))  #Matriz de caracteristicas
         file_list.append(file_audio_name)
-        if count%10==0:
+        if count%100==0:
             print(count)
         
     #----------Prueba guardar datos---------------------------

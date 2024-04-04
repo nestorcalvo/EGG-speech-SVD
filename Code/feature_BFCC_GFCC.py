@@ -14,6 +14,7 @@ from scipy.io.wavfile import read
 from spafe.features.bfcc import bfcc
 from spafe.features.gfcc import gfcc
 from spafe.utils.vis import show_features
+from spafe.utils.preprocessing import SlidingWindow
 from scipy.signal import resample
 from os import listdir
 from os.path import isfile, join
@@ -57,7 +58,7 @@ def BFCC_feature_generate(PATH, save_path):
         x = x - np.mean(x)                # Restar media
         x = x/float(max(abs(x))) 
     
-        matriz_bfcc = bfcc(x,fs_min,win_len = 0.025,win_hop = 0.01, win_type = "hamming",num_ceps =num_ceps ,nfilts= num_filters)
+        matriz_bfcc = bfcc(x,fs_min,window=SlidingWindow(0.025, 0.01, "hamming"),num_ceps =num_ceps ,nfilts= num_filters)
         feat_vect = np.empty(0)        
         for i in range(num_ceps):
             media  = np.mean(matriz_bfcc[:,i])
@@ -72,7 +73,7 @@ def BFCC_feature_generate(PATH, save_path):
         
     
     
-        if count%10==0:
+        if count%100==0:
             print(count)
     col_names = []
     for i in range(num_ceps):
@@ -90,7 +91,7 @@ def BFCC_feature_generate(PATH, save_path):
 
 
 
-def BFCC_feature_generate(PATH, save_path):
+def GFCC_feature_generate(PATH, save_path):
     num_filters = 32
     num_ceps = 13
     fs_min = 20000
@@ -107,7 +108,7 @@ def BFCC_feature_generate(PATH, save_path):
         x = x - np.mean(x)                # Restar media
         x = x/float(max(abs(x))) 
     
-        matriz_gfcc = gfcc(x,fs_min,win_len = 0.025,win_hop = 0.01, win_type = "hamming",num_ceps =num_ceps ,nfilts= num_filters)
+        matriz_gfcc = gfcc(x,fs_min,window=SlidingWindow(0.025, 0.01, "hamming"),num_ceps =num_ceps ,nfilts= num_filters)
         feat_vect = np.empty(0)        
         for i in range(num_ceps):
             media  = np.mean(matriz_gfcc[:,i])
@@ -122,7 +123,7 @@ def BFCC_feature_generate(PATH, save_path):
         
     
     
-        if count%10==0:
+        if count%100==0:
             print(count)
     
     col_names = []

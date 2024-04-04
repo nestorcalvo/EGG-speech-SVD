@@ -34,78 +34,57 @@ def get_features(sig,fs,t_ventana):
         
     
     return np.mean(sample_entropy), np.std(sample_entropy),np.mean(LLE), np.std(LLE),np.mean(hurst_exponent), np.std(hurst_exponent)
-PATH = '/home/nestor/Documents/Maestria/Avances Maestria/Databases Masters/Database Merge WAV'
-files = [f for f in listdir(PATH) if isfile(join(PATH, f))]
 
-fs_list = []
-ex_len_list = []
-dis_len_list = []
-
-for f in files:     #Recorrrer lista de disparos
-    f = os.path.join(PATH,f)
-    fs, x = read(f)
-    fs_list.append(fs)
-    dis_len_list.append(len(x)/fs)
-
-
-#fs_min = min(fs_list)
-fs_min = 20000
-#%%
-mat_dis = np.zeros([len(files),3])      # Matriz de caracteristicas vacia
-en_tot = np.zeros([0])          # energias
-file_list = []
-for count,file_audio in enumerate(files):  
-    file_audio_name = file_audio
-    file_audio = os.path.join(PATH, file_audio)
-    fs, x = read(file_audio)
-    x = norm_fs(x,fs,fs_min)              # Normalizar frecuencia de muestreo
-    t=np.arange(0, len(x)/fs_min, 1.0/fs_min)
+def non_linear_feature_generate(PATH, save_path):
+    files = [f for f in listdir(PATH) if isfile(join(PATH, f))]
     
-    x = x - np.mean(x)                # Restar media
-    x = x/float(max(abs(x)))          # escalar la amplitud de la senal
-    print("Extract features from signal")
-    mat_dis[count][0] = ns.sampen(x[0:int(0.1*fs)])
-    mat_dis[count][1] = ns.lyap_r(x[0:int(0.1*fs)])
-    mat_dis[count][2] = ns.hurst_rs(x[0:int(0.1*fs)])
-    #mat_dis[count] = get_features(x,fs_min,0.1) 
-
+    fs_list = []
+    ex_len_list = []
+    dis_len_list = []
     
-# =============================================================================
-#     v_carac = mfcc_vector(matriz_mfcc)
-#     mat_dis = np.vstack((mat_dis,v_carac))  #Matriz de caracteristicas
-#     file_list.append(file_audio_name)
-#     if count%10==0:
-#         print(count)
-# =============================================================================
-# =============================================================================
-# 
-# col_names = []
-# for i in range(20):
-#     col_names.append('MFCC_'+str(i+1)+'_mean')
-#     col_names.append('MFCC_'+str(i+1)+'_std')
-#     col_names.append('MFCC_'+str(i+1)+'_skew')
-#     col_names.append('MFCC_'+str(i+1)+'_kurt')
-# 
-# df = pd.DataFrame(data=mat_dis.astype(float))
-# df.columns = col_names
-# =============================================================================
-
-
-#%%
-file_list = []
-for count,file_audio in enumerate(files):  
-    file_list.append(file_audio)
-#%%
-col_names = []
-col_names.append("sampen")
-col_names.append("LLE")
-col_names.append("hurst_exponent")
-df_non_linear = pd.DataFrame(data=mat_dis.astype(float))
-df_non_linear.columns = col_names
-#%%
-df_non_linear["file_name"] = file_list
-cols = list(df_non_linear)
-cols.insert(0, cols.pop(cols.index('file_name')))
-df_non_linear = df_non_linear.loc[:, cols]
-#%%
-df_non_linear.to_csv('/home/nestor/Documents/Maestria/Avances Maestria/Features Disvoice/Features/non_linear_a_vowel.csv', sep=',', header=True, index=False)
+    for f in files:     #Recorrrer lista de disparos
+        f = os.path.join(PATH,f)
+        fs, x = read(f)
+        fs_list.append(fs)
+        dis_len_list.append(len(x)/fs)
+    
+    
+    #fs_min = min(fs_list)
+    fs_min = 20000
+    
+    mat_dis = np.zeros([len(files),3])      # Matriz de caracteristicas vacia
+    en_tot = np.zeros([0])          # energias
+    file_list = []
+    for count,file_audio in enumerate(files):  
+        file_audio_name = file_audio
+        file_audio = os.path.join(PATH, file_audio)
+        fs, x = read(file_audio)
+        x = norm_fs(x,fs,fs_min)              # Normalizar frecuencia de muestreo
+        t=np.arange(0, len(x)/fs_min, 1.0/fs_min)
+        
+        x = x - np.mean(x)                # Restar media
+        x = x/float(max(abs(x)))          # escalar la amplitud de la senal
+        print("Extract features from signal")
+        mat_dis[count][0] = ns.sampen(x[0:int(0.1*fs)])
+        mat_dis[count][1] = ns.lyap_r(x[0:int(0.1*fs)])
+        mat_dis[count][2] = ns.hurst_rs(x[0:int(0.1*fs)])
+        #mat_dis[count] = get_features(x,fs_min,0.1) 
+    
+        
+    file_list = []
+    for count,file_audio in enumerate(files):  
+        file_list.append(file_audio)
+    
+    col_names = []
+    col_names.append("sampen")
+    col_names.append("LLE")
+    col_names.append("hurst_exponent")
+    df_non_linear = pd.DataFrame(data=mat_dis.astype(float))
+    df_non_linear.columns = col_names
+    
+    df_non_linear["file_name"] = file_list
+    cols = list(df_non_linear)
+    cols.insert(0, cols.pop(cols.index('file_name')))
+    df_non_linear = df_non_linear.loc[:, cols]
+    
+    df_non_linear.to_csv(save_path, sep=',', header=True, index=False)
