@@ -18,7 +18,7 @@ IDs_path = './Metadata/IDs_Balanced.csv'
 task = 'phrase'
 signal_type = 'speech'
 signal = '' if signal_type == 'speech' else '-egg'
-feature='BFCC'
+feature='non_linear'
 
 #IDs = pd.read_csv(IDs_path, index_col=[0])
 # Read audios
@@ -32,10 +32,10 @@ feature = pd.read_csv(feature_file, index_col=[0])
 X = []
 y = []
 for i, ID in enumerate(IDs):
-    try:
-        ID_selected_features = list(feature.loc[f'{ID}-{task}{signal}.wav'])
-    except:
-        continue
+    
+    ID_selected_features = list(feature.loc[f'{ID}-{task}{signal}.wav'])
+    
+        
     X.append(ID_selected_features)    
     y.append(IDs_csv[IDs_csv['ID']==ID].target.item())
 
