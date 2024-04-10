@@ -12,7 +12,7 @@ from scipy.stats import skew
 import pysptk
 import matplotlib.pyplot as plt
 import numpy as np
-
+import librosa
 from os import listdir
 from os.path import isfile, join
 import os
@@ -80,11 +80,13 @@ def MFCC_feature_generate(audio_path, save_path):
     ex_len_list = []
     dis_len_list = []
     
-    for f in files:     #Recorrrer lista de disparos
-        f = os.path.join(audio_path,f)
-        fs, x = read(f)
-        fs_list.append(fs)
-        dis_len_list.append(len(x)/fs)
+# =============================================================================
+#     for f in files:     #Recorrrer lista de disparos
+#         f = os.path.join(audio_path,f)
+#         fs, x = read(f)
+#         fs_list.append(fs)
+#         dis_len_list.append(len(x)/fs)
+# =============================================================================
     
     
     #fs_min = min(fs_list)
@@ -98,7 +100,7 @@ def MFCC_feature_generate(audio_path, save_path):
     for count,file_audio in enumerate(files):  
         file_audio_name = file_audio
         file_audio = os.path.join(audio_path, file_audio)
-        fs, x = read(file_audio)
+        x, fs = librosa.load(file_audio)
         x = norm_fs(x,fs,fs_min)              # Normalizar frecuencia de muestreo
         t=np.arange(0, len(x)/fs_min, 1.0/fs_min)
         

@@ -8,6 +8,8 @@ Created on Wed Jun 29 14:05:29 2022
 Archivo utilizad para acceder automaticamente a la base de datos SVD y realizar la descarga de los
 archivos, este script permite hacer webscarping para no solo descargar sino almacenar la información en un .csv
 de los datos descargados
+
+#1 in excecution order
 """
 #%% Librerias a importar
 import requests

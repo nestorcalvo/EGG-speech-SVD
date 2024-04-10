@@ -14,6 +14,8 @@ simplemente se ignora, el script organiza cada audio dentro de la carpeta con el
 
 Una vez organizado se crea un nuevo csv que contiene la información de los audios que si fueron descargados y organizados
 llamado "SVD_all_pathologies.csv" este nuevo csv tiene información como edad, genero, enfermedad, frecuencia de muestreo e ID 
+
+#2 in execution order
 """
 import pandas as pd
 import os
@@ -101,15 +103,22 @@ def check_file_stored(folder_with_csv, folder_to_check_audios,folder_to_save_csv
         
         if (file!='geckodriver.log'):
             path = os.path.join(folder_with_csv,file)
+            
             df = pd.read_csv(path, on_bad_lines='skip')
             df_new = pd.concat([df,pd.DataFrame(columns=columns_to_add)])
             
             file_name = file.split('.')[0]
+            
             path_pathology = os.path.join(folder_to_check_audios, file_name)
+            
             for file_audio in os.listdir(path_pathology):
+                
                 text_splitted = file_audio.split('-')
+                
                 id_file = text_splitted[0]
                 audio_letter = text_splitted[1].split('_')[0]
+                #audio_letter = audio_letter.split('.')[0]
+                
                 #EGG file
                 if(len(text_splitted)==3):
                     file_extension = text_splitted[2].split('.')[1]
@@ -119,9 +128,11 @@ def check_file_stored(folder_with_csv, folder_to_check_audios,folder_to_save_csv
                     audio_letter = audio_letter.split('.')[0]
                     
                     column_to_save = audio_letter + " wav"
+                print(column_to_save)
                 df_new.loc[df_new["ID"] == int(id_file),column_to_save] = 1
                 df_new.to_csv(os.path.join(folder_to_save_csv, file), index=False)
-                print(audio_letter)
+                #print(audio_letter)
+            break
                 
 check_file_stored(folder_with_csv, folder_to_check_audios,folder_to_save_csv)
 #%% Concatenate all the csv into one csv

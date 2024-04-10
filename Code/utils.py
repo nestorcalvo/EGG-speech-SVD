@@ -4,6 +4,8 @@
 Created on Thu Apr  4 19:51:12 2024
 
 @author: nestor
+
+#6 in execution order
 """
 
 import os
@@ -28,6 +30,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 import pickle
+import pathlib
+import csv
 
 #%%
 def statistical_information(y_true, y_predicted, classes):
@@ -36,9 +40,9 @@ def statistical_information(y_true, y_predicted, classes):
     print("Weighted F1 Score:", f1)
     
     conf_matrix = confusion_matrix(y_true, y_predicted, labels = classes)
-    print("Class order: ", classes)
-    print("Confusion Matrix:")
-    print(conf_matrix)
+    #print("Class order: ", classes)
+    #print("Confusion Matrix:")
+    #print(conf_matrix)
     
     num_classes = len(classes)  # Number of unique classes in the true labels
     
@@ -74,12 +78,15 @@ def DecisionTree(X,y,folds, optimizer=True,*args, **kwargs):
         #Get info of each folder
         train_set_folder = folds[folder]['train']
         test_set_folder = folds[folder]['test']
-
+        train_set_folder = list(train_set_folder)
+        test_set_folder = list(test_set_folder)
         X_train = X.iloc[train_set_folder]
         y_train = y.iloc[train_set_folder]
+        y_train = y_train.values.ravel()
 
         X_test = X.iloc[test_set_folder]
         y_test = y.iloc[test_set_folder]
+        y_test = y_test.values.ravel()
         print(f"FOLD #{i+1}")
         print(f"X train shape: {X_train.shape} and y train shape: {y_train.shape}")
         print(f"X test shape: {X_test.shape} and y test shape: {y_test.shape}")
@@ -150,12 +157,15 @@ def RandomForest(X,y,folds, optimizer=True,*args, **kwargs):
     for i, folder in enumerate(folds):
         train_set_folder = folds[folder]['train']
         test_set_folder = folds[folder]['test']
-
+        train_set_folder = list(train_set_folder)
+        test_set_folder = list(test_set_folder)
         X_train = X.iloc[train_set_folder]
         y_train = y.iloc[train_set_folder]
+        y_train = y_train.values.ravel()
 
         X_test = X.iloc[test_set_folder]
         y_test = y.iloc[test_set_folder]
+        y_test = y_test.values.ravel()
         print(f"FOLD #{i+1}")
         print(f"X train shape: {X_train.shape} and y train shape: {y_train.shape}")
         print(f"X test shape: {X_test.shape} and y test shape: {y_test.shape}")
@@ -220,9 +230,9 @@ def SVM_Classifier(X,y,folds,optimizer = True,*args, **kwargs):
     result_dict = {}
     if optimizer:
         param_grid = {
-            'model__C': [0.00001,0.0005,0.0001,0.005,0.001, 0.01, 0.1, 1],
+            'model__C': [0.00001,0.0001,0.001, 0.01, 0.1, 1, 10],
             'model__kernel': ['linear', 'rbf'],
-            'model__gamma': [0.00001,0.0005,0.0001,0.005,0.001,0.001, 0.01, 0.1, 1],
+            'model__gamma': [0.00001,0.0001,0.001,0.001, 0.01, 0.1, 1],
         }
     feature_name = list(X.columns)
 
@@ -230,13 +240,17 @@ def SVM_Classifier(X,y,folds,optimizer = True,*args, **kwargs):
         #Get info of each folder
         train_set_folder = folds[folder]['train']
         test_set_folder = folds[folder]['test']
+        train_set_folder = list(train_set_folder)
+        test_set_folder = list(test_set_folder)
 
         X_train = X.iloc[train_set_folder]
         y_train = y.iloc[train_set_folder]
+        y_train = y_train.values.ravel()
 
         X_test = X.iloc[test_set_folder]
         y_test = y.iloc[test_set_folder]
-
+        y_test = y_test.values.ravel()
+        
 
         print(f"FOLD #{i+1}")
         print(f"X train shape: {X_train.shape} and y train shape: {y_train.shape}")
@@ -247,13 +261,23 @@ def SVM_Classifier(X,y,folds,optimizer = True,*args, **kwargs):
                 ('model', SVC(probability=True))
             ])
             grid_search = GridSearchCV(estimator=svm_classifier, param_grid=param_grid, scoring='accuracy')
-
+            
             grid_search.fit(X_train, y_train)
             best_params = grid_search.best_params_
             best_model = grid_search.best_estimator_
             classes_order = grid_search.classes_
             accuracy = best_model.score(X_test, y_test)
+            
             y_predicted = best_model.predict(X_test)
+            
+            print(y_test)
+            print(y_predicted)
+            indices_diferentes = np.where(y_test != y_predicted)[0]
+            indices_diferentes = list(indices_diferentes)
+            errores = [y_test[i] for i in indices_diferentes]
+            print(errores)
+            errores = [test_set_folder[i] for i in indices_diferentes]
+            print(errores)
             decision_scores = best_model.decision_function(X_test)
             f1, sensitivity, specificity,c_matrix = statistical_information(list(y_test),list(y_predicted),classes_order)
             print(accuracy)
@@ -368,3 +392,36 @@ def RF_Optimization(X,y, cv_folds, PATH_BEST_RESULTS_FOLDS,PATH_BEST_RESULTS_FIX
     with open(PATH_BEST_RESULTS_FIXED_PARAMS, 'wb') as handle:
         pickle.dump(result_best_param, handle)
     return result_best_param
+
+#%%
+ids_balanced = './Metadata/IDs_Balanced.csv'
+folders_path_name = './Folds'
+def create_folders(ids_balanced, folders_path_name):
+    folders_path = pathlib.Path(folders_path_name)
+    folders_path.mkdir(parents=True, exist_ok=True)
+    df = pd.read_csv(ids_balanced)
+    
+    skf = StratifiedKFold(n_splits=10)
+    store_array_train = []
+    store_array_test = []
+    X = df.loc[:,'ID']
+    y = df.loc[:,'target']
+    for i, (train_index, test_index) in enumerate(skf.split(X, y)):
+        print(f"Fold {i}")
+    
+        store_array_train.append(train_index)
+        store_array_test.append(test_index)
+    
+    store_dict = {}
+    for i, (train, test) in enumerate(zip(store_array_train, store_array_test)):
+        fold_name = f"Fold {i+1}"
+        store_dict[fold_name] = {'train': train, 'test': test}
+    file_name = folders_path_name + '/folds.pickle'
+    with open(file_name, 'wb') as handle:
+      pickle.dump(store_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+      
+create_folders(ids_balanced, folders_path_name)     
+#%%
+
+
+
