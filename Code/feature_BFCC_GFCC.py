@@ -50,8 +50,11 @@ def BFCC_feature_generate(PATH, save_path):
     file_list = []
     files = [f for f in listdir(PATH) if isfile(join(PATH, f))]
     for count,file_audio in enumerate(files):  
+        
         file_audio_name = file_audio
         file_audio = os.path.join(PATH, file_audio)
+        
+        
         fs, x = read(file_audio)
         x = norm_fs(x,fs,fs_min)              # Normalizar frecuencia de muestreo
         t=np.arange(0, len(x)/fs_min, 1.0/fs_min)
@@ -75,6 +78,7 @@ def BFCC_feature_generate(PATH, save_path):
     
         if count%100==0:
             print(count)
+        
     col_names = []
     for i in range(num_ceps):
         col_names.append('BFCC_'+str(i+1)+'_mean')
