@@ -22,9 +22,9 @@ results_path = './Results'
 folds_path = './Folds'
 #IDs_path = './Metadata/all_IDs.csv'
 IDs_path = './Metadata/IDs_Balanced.csv'
-tasks = ['vowel_i','vowel_a','phrase'] #'phrase' 'vowel_a'
+tasks = ['vowel_a','vowel_i','vowel_u','phrase'] #'phrase' 'vowel_a'
 models = ['SVM','DT','RF'] #'DT' or 'RF' or 'XGBoost' or ['DT', 'RF']
-signal_type =  ['speech','egg']# or just 'egg' or 'speech'
+signal_type =  ['speech']# or just 'egg' or 'speech'
 feature=['BFCC', 'GFCC', 'non_linear'] #'BFCC' or 'GFCC' or 'non_linear' or 'all'
 
 def models_optimization(folds_path, IDs_path, results_path, tasks, models, signal_type, feature):

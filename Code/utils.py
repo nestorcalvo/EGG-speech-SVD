@@ -256,8 +256,9 @@ def SVM_Classifier(X,y,folds,optimizer = True,*args, **kwargs):
         print(f"X train shape: {X_train.shape} and y train shape: {y_train.shape}")
         print(f"X test shape: {X_test.shape} and y test shape: {y_test.shape}")
         if optimizer:
+                #('scaler', StandardScaler()),
             svm_classifier = Pipeline(steps=[
-                ('scaler', StandardScaler()),
+
                 ('model', SVC(probability=True))
             ])
             grid_search = GridSearchCV(estimator=svm_classifier, param_grid=param_grid, scoring='accuracy')
@@ -294,7 +295,8 @@ def SVM_Classifier(X,y,folds,optimizer = True,*args, **kwargs):
             best_C = kwargs.get('C')
             best_gamma = kwargs.get('gamma')
             best_kernel = kwargs.get('kernel')
-            clf = make_pipeline(StandardScaler(), SVC(C = best_C,gamma = best_gamma,kernel = best_kernel,probability=True))
+            #StandardScaler(), 
+            clf = make_pipeline(SVC(C = best_C,gamma = best_gamma,kernel = best_kernel,probability=True))
 
             clf.fit(X_train, y_train)
             classes_order = clf.classes_

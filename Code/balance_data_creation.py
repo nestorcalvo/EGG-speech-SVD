@@ -52,7 +52,18 @@ def balance_dataset(info_subjects,save_path,path_balanced_IDs):
     metadata_SVD = metadata_SVD.drop(columns=(['i wav','u wav','phrase wav','i egg','a egg','u egg','phrase egg']))
     #metadata_SVD = metadata_SVD[metadata_SVD['a wav'].notna()]
     #metadata_SVD = metadata_SVD.drop_duplicates(subset = ['S'])
-    mask = ['Laryngitis','Dysphonie', 'Funktionelle Dysphonie','Dysodie','Kontaktpachydermie', 'Balbuties','Intubationsgranulom', 'Gesangsstimme','Leukoplakie']
+    #'Laryngitis'
+    #'Dysodie',
+    mask = ['Laryngitis',
+            'Rekurrensparese',
+            'Dysphonie', 
+            'Funktionelle Dysphonie',
+            'Hyperfunktionelle Dysphonie',
+            'Kontaktpachydermie', 
+            'Balbuties',
+            'Intubationsgranulom', 
+            'Gesangsstimme',
+            'Leukoplakie']
     metadata_SVD = metadata_SVD[~metadata_SVD['Pathologies'].isin(mask)]
     list_files = listdir(save_path)
     id_in_files = []
