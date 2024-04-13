@@ -1,13 +1,3 @@
-form Directory to analyse and file
-	text directoryParent 
-	text directoryTarget
-	integer MaxnumForm
-	integer Maxformant
-	integer framesize
-	positive time_step
-endform
-
-Read from file... 'directoryParent$'
-To Formant (burg)... 'time_step' 'MaxnumForm' 'Maxformant' 'framesize' 50
-Write to short text file... 'directoryTarget$'
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:e99e27038632986b0968d93d2df894e65f2fe5a90aee552cf54c670f8a989841
+size 327
