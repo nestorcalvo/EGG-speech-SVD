@@ -104,7 +104,7 @@ def check_file_stored(folder_with_csv, folder_to_check_audios,folder_to_save_csv
         if (file!='geckodriver.log'):
             path = os.path.join(folder_with_csv,file)
             
-            df = pd.read_csv(path, on_bad_lines='skip')
+            df = pd.read_csv(path, error_bad_lines='skip')
             df_new = pd.concat([df,pd.DataFrame(columns=columns_to_add)])
             
             file_name = file.split('.')[0]
@@ -132,7 +132,7 @@ def check_file_stored(folder_with_csv, folder_to_check_audios,folder_to_save_csv
                 df_new.loc[df_new["ID"] == int(id_file),column_to_save] = 1
                 df_new.to_csv(os.path.join(folder_to_save_csv, file), index=False)
                 #print(audio_letter)
-            break
+            
                 
 check_file_stored(folder_with_csv, folder_to_check_audios,folder_to_save_csv)
 #%% Concatenate all the csv into one csv
@@ -152,7 +152,7 @@ def concatenate_all_csv(folder_with_csv, path_to_save):
     for file in onlyfiles:
         
         path = os.path.join(folder_with_csv,file)
-        df_temp = pd.read_csv(path, on_bad_lines='skip')
+        df_temp = pd.read_csv(path, error_bad_lines='skip')
         if (df_temp.shape[1] == 18):
             df_temp = df_temp.drop(columns=('remarks wav'))
         array_of_dataframes.append(df_temp)

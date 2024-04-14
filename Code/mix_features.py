@@ -28,9 +28,9 @@ from Code.feature_non_linear import *
 data_path = './Database'
 feature_path = './Features'
 #IDs_path = './Metadata/IDs_Balanced.csv'
-tasks = ['vowel a','vowel i', 'vowel u', 'phrase']#'phrase'
-signal_type = ['speech','egg']
-feature='all'
+tasks = ['vowel i', 'vowel u']#'phrase'
+signal_type = ['egg']
+feature='non_linear'
 
 def extract_features(data_path, feature_path, tasks, signal_type, feature='all'):
 

@@ -1,4 +1,4 @@
-alabaster @ file:///home/ktietz/src/ci/alabaster_1611921544520/work
+
 arrow @ file:///croot/arrow_1676588132104/work
 astroid @ file:///croot/astroid_1676904296642/work
 asttokens @ file:///opt/conda/conda-bld/asttokens_1646925590279/work
@@ -6,7 +6,7 @@ atomicwrites==1.4.0
 attrs @ file:///croot/attrs_1695717823297/work
 autopep8 @ file:///croot/autopep8_1708962882016/work
 Babel @ file:///croot/babel_1671781930836/work
-backcall @ file:///home/ktietz/src/ci/backcall_1611930011877/work
+
 beautifulsoup4 @ file:///croot/beautifulsoup4-split_1681493039619/work
 binaryornot @ file:///tmp/build/80754af9/binaryornot_1617751525010/work
 black @ file:///croot/black_1701096792414/work
