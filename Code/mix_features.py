@@ -28,7 +28,7 @@ from Code.feature_non_linear import *
 data_path = './Database'
 feature_path = './Features'
 #IDs_path = './Metadata/IDs_Balanced.csv'
-tasks = ['vowel i', 'vowel u']#'phrase'
+tasks = ['vowel a','vowel i', 'vowel u', 'phrase']#'phrase'
 signal_type = ['egg']
 feature='non_linear'
 

@@ -12,7 +12,7 @@ import sys
 if './Code' not in sys.path:
     sys.path.append('./Code')
 
-from util import *
+from utils import *
 from model import *
 import ast
 
@@ -24,12 +24,12 @@ folds_path = './Folds'
 IDs_path = './Metadata/IDs_Balanced.csv'
 tasks = ['vowel_a','vowel_i','vowel_u','phrase'] #'phrase' 'vowel_a'
 models = ['SVM','DT','RF'] #'DT' or 'RF' or 'XGBoost' or ['DT', 'RF']
-signal_type =  ['speech', 'egg']# or just 'egg' or 'speech'
-feature=['articulation', 'phonation'] #'BFCC' or 'GFCC' or 'non_linear' or 'all'
+signal_type =  ['egg']# or just 'egg' or 'speech'
+feature=['MFCC','BFCC', 'GFCC', 'non_linear'] #'BFCC' or 'GFCC' or 'non_linear' or 'all'
 
 def models_optimization(folds_path, IDs_path, results_path, tasks, models, signal_type, feature):
     if feature == 'all':
-        feature_list = ['articulation', 'phonation', 'MFCC', 'BFCC', 'GFCC', 'non_linear']
+        feature_list = ['MFCC', 'BFCC', 'GFCC', 'non_linear']
     else:
         if isinstance(feature, str):
             feature_list = [feature]
@@ -83,7 +83,7 @@ models_optimization(folds_path, IDs_path, results_path, tasks, models, signal_ty
 
 
 if feature == 'all':
-    feature_list = ['articulation', 'phonation', 'MFCC', 'BFCC', 'GFCC', 'non_linear']
+    feature_list = [ 'BFCC', 'GFCC', 'non_linear']
 else:
     if isinstance(feature, str):
         feature_list = [feature]
