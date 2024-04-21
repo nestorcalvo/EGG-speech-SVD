@@ -34,7 +34,12 @@ def get_features_X_Y(feature_path, feature, task, signal_type, IDs_path):
       feature_name = f'{feature}_{task}_{signal_type}.csv'
     
       feature_file = os.path.join(feature_path, feature_name)
-      feature = pd.read_csv(feature_file, index_col=[0])
+      if feature == 'articulation' or feature == 'phonation':
+          
+          feature = pd.read_csv(feature_file, index_col='id')
+          feature = feature.dropna()
+      else:
+          feature = pd.read_csv(feature_file, index_col=[0])
     except:
       print(f'Feature {feature} not found')
       return None, None
@@ -53,7 +58,8 @@ def get_features_X_Y(feature_path, feature, task, signal_type, IDs_path):
         except:
             print(f'Audio {ID}-{task}{signal}.wav not found')
     
-    
+        
+            
         X.append(ID_selected_features)
         y.append(IDs_csv[IDs_csv['ID']==ID].target.item())
         IDs_array.append(ID)

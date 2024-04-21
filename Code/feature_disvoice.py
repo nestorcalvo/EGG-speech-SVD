@@ -18,12 +18,14 @@ if disvoice_path not in sys.path:
 from articulation.articulation import Articulation
 from phonation import Phonation
 signal_type = ['speech', 'egg']
-tasks = ['vowel a','vowel i','vowel u', 'phrase']
+tasks = ['vowel u', 'phrase']
 for task in tasks:
     for signal in signal_type:
         
         if ' ' in task:
             task_name_file = task.replace(' ','_')
+        else:
+            task_name_file = task
         path_folder = f'/home/nestor/Documents/Maestria/Masters Degree Thesis/Database/{signal}/{task}/'
         articulation=Articulation()
         phonation=Phonation()

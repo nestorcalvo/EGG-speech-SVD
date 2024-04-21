@@ -424,6 +424,63 @@ def create_folders(ids_balanced, folders_path_name):
       
 #create_folders(ids_balanced, folders_path_name)     
 #%%
+def late_fussion(PATH_RESULT_LATE_FUSION,modality_1_dataset, modality_2_dataset, prob_value_1 = 0.5, prob_value_2=0.5):
+  if prob_value_1 + prob_value_2 != 1:
+    raise ValueError("The sum of the probabilities must be 1")
+  result_dict = {}
 
+  for i, key in enumerate(modality_1_dataset.keys()):
+
+    prob_1 = modality_1_dataset[key]["probability"]
+    prob_2 = modality_2_dataset[key]["probability"]
+    class_order = list(modality_1_dataset[key]["class_order"])
+    original_labels = np.array(modality_1_dataset[key]["original_label"])
+    labels = [class_order.index(x) for x in original_labels]
+    combined_predictions = (prob_value_1 * prob_1) + (prob_value_2 * prob_2)
+    final_prediction = list(np.argmax(combined_predictions, axis=1))
+    accuracy_fusion_late = accuracy_score(labels, final_prediction)
+
+    f1 = f1_score(labels, final_prediction, average='weighted')
+
+    print("Weighted F1 Score:", f1)
+
+    conf_matrix = confusion_matrix(labels, final_prediction)
+    print("Class order: ", class_order)
+    print("Confusion Matrix:")
+    print(conf_matrix)
+
+    num_classes = len(class_order)  # Number of unique classes in the true labels
+
+    sensitivity = []
+    specificity = []
+
+    for i, class_name in enumerate(class_order):
+        true_positive = conf_matrix[i, i]
+        false_positive = sum(conf_matrix[:, i]) - true_positive
+        false_negative = sum(conf_matrix[i, :]) - true_positive
+        true_negative = sum(sum(conf_matrix)) - true_positive - false_positive - false_negative
+
+        sensitivity_i = true_positive / (true_positive + false_negative)
+        specificity_i = true_negative / (true_negative + false_positive)
+
+        sensitivity.append(sensitivity_i)
+        specificity.append(specificity_i)
+
+    print("Sensitivity (True Positive Rate) for each class:", sensitivity)
+    print("Specificity (True Negative Rate) for each class:", specificity)
+
+    print(accuracy_fusion_late)
+
+    result_dict[f'Fold {i+1}'] = {'prob_used_1':prob_value_1,
+                                  'accuracy_best_model':accuracy_fusion_late,
+                                  'f1_score':f1,
+                                  'sensitivity':sensitivity,
+                                  'specificity':specificity,
+                                  'confusion_matrix':conf_matrix,
+                                  'class_order':class_order}
+  with open(PATH_RESULT_LATE_FUSION, 'wb') as handle:
+    pickle.dump(result_dict, handle)
+  print("File saved in ", PATH_RESULT_LATE_FUSION)
+  return result_dict
 
 
